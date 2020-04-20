@@ -15,10 +15,10 @@
 
 int main(int argc, char *argv[])
 {
-  int i;
+  int i,j,k;
   float diff;
-  int afd, bfd; /* file descriptor */
-  float *aaddr, *baddr;
+  int afd, bfd, cfd; /* file descriptor */
+  float *aaddr, *baddr, *caddr;
   
   if (argc < 4){
     fprintf(stderr, "Usage: %s <file1> <file2> <diff>\n", argv[0]);
@@ -29,18 +29,38 @@ int main(int argc, char *argv[])
   assert(afd);
   bfd = open(argv[2], O_RDONLY);
   assert(bfd);
+  cfd = open(argv[3], O_RDWR);
+  assert(cfd);
+  
   aaddr = mmap(0, sizeof(float) * M * M, PROT_READ, MAP_PRIVATE, afd,0);
   assert (aaddr != MAP_FAILED);
   baddr = mmap(0, sizeof(float) * M * M, PROT_READ, MAP_PRIVATE, bfd,0);
   assert (baddr != MAP_FAILED);
-  diff = atof(argv[3]);
-  for (i = 0; i < M * M; i++){
-    if (fabsf(aaddr[i] - baddr[i]) > diff){
-      printf("Values %f and %f at location %d are different.\n", aaddr[i], baddr[i], i);
-      break;
-    }
+  caddr = mmap(0, sizeof(float) * M * M, PROT_WRITE, MAP_PRIVATE, cfd,0);
+  assert (caddr != MAP_FAILED);
+  //diff = atof(argv[3]);
+  // for (i = 0; i < M * M; i++){
+    // if (fabsf(aaddr[i] - baddr[i]) > diff){
+      // printf("Values %f and %f at location %d are different.\n", aaddr[i], baddr[i], i);
+      // break;
+    // }
+  // }
+  for(i=0;i<M;i++)
+  {
+	  for(j=0;j<M;j++)
+	  {
+		for(k=0;k<M;k++)
+		{
+			*(caddr+(i*M)+j)+=*(aaddr+(i*M)+k) * *(baddr+(k*M)+j)
+		}
+	  }
+	  
   }
+  
+  
+  
   close(afd);
   close(bfd);
+  close(cfd);
   exit(0);
 }
