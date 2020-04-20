@@ -17,14 +17,14 @@
 int main(int argc, char *argv[])
 {
   int i,j,k;
-  float diff;
+  //float diff;
   int afd, bfd, cfd; /* file descriptor */
   float *aaddr, *baddr, *caddr;
   float *result=(float*)malloc(sizeof(float)*M*M);
   
   clock_t t1, t2;
 
-
+  
   if (argc < 4){
     fprintf(stderr, "Usage: %s <file1> <file2> <diff>\n", argv[0]);
     exit(1);
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
   t2 = clock();
 
   printf("Read two file time : %fs\n",(double)(t2-t1)/CLOCKS_PER_SEC);
-
+  /*
   diff = atof(argv[3]);
    
   for (i = 0; i < M * M; i++){
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
        break;
      }
    }
-  
+  */
 
   
   t1=clock();
