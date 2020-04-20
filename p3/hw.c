@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
   printf("Matrix Multi time : %fs\n",(double)(t2-t1)/CLOCKS_PER_SEC);
 
   t1=clock();
-  cfd=open(argv[3], O_RDWR );
+  cfd=open(argv[3], O_RDWR|O_CREAT|O_TRUNC );
   assert(cfd);
   
   ftruncate(cfd,sizeof(float)*M*M);
