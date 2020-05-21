@@ -21,6 +21,11 @@ int main(int argc, char *argv[])
   pid_t pids[MAX_C];
   int run=0;
   int tidx=0;
+  int s=0;
+
+  clock_t t1,t2,t3;
+
+  t3=clock();
 
   if (argc < 4){
     fprintf(stderr, "Usage: %s <matrix1> <matrix2> <result_matrix>\n", argv[0]);
@@ -54,6 +59,7 @@ int main(int argc, char *argv[])
 
   while(tidx < run){
   pids[tidx]=fork();
+  t2=clock();
   if(pids[tidx]<0) return -1;
   else if(pids[tidx]==0){
  
@@ -63,23 +69,25 @@ int main(int argc, char *argv[])
 	  	  {
 	  		  for(k=0;k<M;k++)
 			  {
-		 		  *(result+(i*M)+j) += *(aaddr+(i*M)+k) * *(baddr+(k*M)+j);
+		 		  *(caddr+(i*M)+j) += *(aaddr+(i*M)+k) * *(baddr+(k*M)+j);
 		  	  }	
 	  	  }
 
- 	 }
-	 for( j = tidx*M*M/run ; j < M*M/run*(1+tidx) ; j++)
-	 {
-	  	  *(caddr+j) = *(result+j);
+ 	 	 
 	  }
-	printf("%d\n",M*M/run*tidx);  
-	 exit(0);
+	  
+	 ///exit(0);
 
   }else{
-
+	wait(&s);
   }
+   t1=clock();
+   printf("%d child process time : %fs\n",tidx+1,(double)(t1-t2)/CLOCKS_PER_SEC);
    tidx++;
   }
+  t1=clock();
+  printf("parent process time : %fs\n",(double)(t1-t3)/CLOCKS_PER_SEC);
+
   close(afd);
   close(bfd);
   close(cfd);
